@@ -1,0 +1,36 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <context:component-scan base-package="com.bingotree.dubbo.proxy" />
+    <mvc:annotation-driven />
+
+    <dubbo:registry address="dubbo://127.0.0.1:9090"/>
+
+    <dubbo:protocol name="dubbo" port="20890" />
+    <dubbo:service interface="com.bingotree.dubbo.provider.facada.HiWorld" ref="HiWorldImpl"  executes="10" />
+    <bean id="HiWorldImpl" class="com.bingotree.dubbo.provider.service.HiWorldImpl" />
+
+    <dubbo:application name="bingotree-dubbo-proxy" />
+    <dubbo:reference id="demoService" interface="com.treebingo.dubbo.third.facada.HelloWorld"/>
+
+
+    <bean id="dubboConsumerService" class="com.bingotree.dubbo.proxy.DubboConsumerService">
+        <property name="helloWorld" ref="demoService">
+        </property>
+    </bean>
+
+    <bean id="applicationContextProvder"
+          class="com.bingotree.dubbo.proxy.ApplicationContextProvider"/>
+</beans>
